@@ -8,6 +8,6 @@ type LocalStorage struct {
 
 func NewLocalStorage() *LocalStorage {
 	return &LocalStorage{
-		books: make(map[string]models.Book),
+		books: make(map[string]models.Book), // Инициализация хранилища книг
 	}
 }
