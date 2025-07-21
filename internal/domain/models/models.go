@@ -1,11 +1,11 @@
 package models
 
 type Book struct {
-	ID          string `json:"id"`
+	ID          string `json:"id,omitempty"` // omitempty - поле не будет включено в JSON, если оно пустое
 	Author      string `json:"author"`
 	Label       string `json:"label"`
 	Description string `json:"description"`
 	Genre       string `json:"genre"`
-	WrittenAt   int    `json:"written_at"`
-	Count       uint   `json:"count"`
+	WrittenAt   string `json:"written_at"`
+	Count       uint   `json:"count,omitempty"` // Количество книг
 }

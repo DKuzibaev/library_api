@@ -10,7 +10,7 @@ import (
 
 type Repository interface {
 	GetBooksList() ([]models.Book, error)
-	SaveBook(book models.Book) error
+	SaveBook(book models.Book) // Сохранение книги в репозиторий
 }
 
 type LibraryAPI struct {
@@ -62,7 +62,8 @@ func (LAPI *LibraryAPI) configRoutes() {
 func (lAPI *LibraryAPI) booksList(ctx *gin.Context) {
 	books, err := lAPI.repo.GetBooksList()
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		log.Println(err.Error())
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 	ctx.JSON(http.StatusOK, books)
