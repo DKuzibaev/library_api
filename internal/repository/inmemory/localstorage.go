@@ -49,3 +49,18 @@ func (ls *LocalStorage) SaveBook(book models.Book) {
 	book.Count = 1          // Устанавливаем количество книг в 1 при создании новой книги
 	ls.books[bookID] = book // Сохранение книги в хранилище
 }
+
+func (ls *LocalStorage) UpdateBook(id string, updatedBook models.Book) error {
+	book, ok := ls.books[id]
+	if !ok {
+		return errors.ErrBookNotFound // ошибка в errors.go
+	}
+
+	// Обновляем поля (только те, что можно)
+	book.Author = updatedBook.Author
+	book.Label = updatedBook.Label
+	book.Count = updatedBook.Count
+
+	ls.books[id] = book
+	return nil
+}
