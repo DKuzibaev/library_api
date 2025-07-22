@@ -11,6 +11,7 @@ import (
 type Repository interface {
 	GetBooksList() ([]models.Book, error)
 	SaveBook(book models.Book) // Сохранение книги в репозиторий
+	UpdateBook(id string, updatedBook models.Book) error // изменение книги 
 }
 
 type LibraryAPI struct {
@@ -52,7 +53,7 @@ func (LAPI *LibraryAPI) configRoutes() {
 		books.POST("/create", LAPI.newBook) // Создание новой книги по ID
 		books.GET("/list", LAPI.booksList)  // Получение информации всех книгах
 		books.GET("/get/:bookID")           // Получение информации о книге по ID
-		books.PUT("/update/:bookID")        // Обновление информации о книге
+		books.PUT("/update/:bookID", LAPI.updateBook)        // Обновление информации о книге
 		books.DELETE("/delete/:bookID")     // Удаление книги по ID
 	}
 
@@ -80,4 +81,22 @@ func (lAPI *LibraryAPI) newBook(cxt *gin.Context) {
 	lAPI.repo.SaveBook(book)
 	cxt.JSON(http.StatusCreated, book)
 
+}
+
+func (lAPI *LibraryAPI) updateBook(ctx *gin.Context) {
+	bookID := ctx.Param("bookID")
+	var updated models.Book
+
+	if err := ctx.ShouldBindJSON(&updated); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := lAPI.repo.UpdateBook(bookID, updated)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Book updated successfully"})
 }
